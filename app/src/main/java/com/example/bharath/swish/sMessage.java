@@ -1,28 +1,30 @@
 package com.example.bharath.swish;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -37,86 +39,80 @@ import android.widget.Toast;
 
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class sMessage extends AppCompatActivity {
 
-
-    LST header,footer;
+    LST header, footer;
     Animation move1, move2;
     BtReceiver btrec;
-    Handler mHandler=null;
+    Handler mHandler = null;
     float h, w, x, y;
     final HashMap<String, String> action = new HashMap<String, String>();
     String buffer;
     final int[] i = {10};
-    int boundFlag=0,index=0,bFLAG=0,actionFlag=0,state;
+    int boundFlag = 0, index = 0, bFLAG = 0, actionFlag = 0, state;
     RelativeLayout rel;
     private WindowManager wm;
     private LinearLayout ll;
     private Button yes, no;
-    CardView v0,v1,v2,v3;
+    CardView v0, v1, v2, v3;
     TextView show;
-    LinearLayout footerLayout,headerLayout;
+    LinearLayout footerLayout, headerLayout;
+
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //Full Screen
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.scall);
 
         //Setting the header and footer....
-        header=new LST(MainActivity.this);
-        footer=new LST(MainActivity.this);
+        header = new LST(sMessage.this);
+        footer = new LST(sMessage.this);
         header.setLetterSpacing(10);
         footer.setLetterSpacing(10);
         header.setTextColor(Color.parseColor("#000000"));
         footer.setTextColor(Color.parseColor("#000000"));
         header.setTextSize(25);
         footer.setTextSize(25);
-        header.setText("###swish###");
+        header.setText("###call###");
         footer.setText("Recognising....");
-        footerLayout=(LinearLayout)findViewById(R.id.footerLayout);
-        headerLayout=(LinearLayout)findViewById(R.id.headerLayout);
-        rel=(RelativeLayout)findViewById(R.id.rel);
+        footerLayout = (LinearLayout) findViewById(R.id.footerLayout);
+        headerLayout = (LinearLayout) findViewById(R.id.headerLayout);
+        rel = (RelativeLayout) findViewById(R.id.rel);
         headerLayout.addView(header);
         footerLayout.addView(footer);
 
         //Setting the cardviews...
 
-        v0=(CardView)findViewById(R.id.view0);
-        v1=(CardView)findViewById(R.id.view1);
-        v2=(CardView)findViewById(R.id.view2);
-        v3=(CardView)findViewById(R.id.view3);
+        v0 = (CardView) findViewById(R.id.view0);
+        v1 = (CardView) findViewById(R.id.view1);
+        v2 = (CardView) findViewById(R.id.view2);
+        v3 = (CardView) findViewById(R.id.view3);
 
         v0.setElevation(10);
         v1.setElevation(10);
         v2.setElevation(10);
         v3.setElevation(10);
 
-        //Starting timer...
-        mHandler=new Handler();
-        timer();
-
-
-        //Registering the bluetooth receiver...
         btrec = new BtReceiver();
         IntentFilter iff = new IntentFilter();
         iff.addAction(Bluetooth.BLUETOOTH_SERVICE);
         registerReceiver(btrec, iff);
+
+        //Starting timer...
+        mHandler = new Handler();
+        timer();
 
 
         animateText();
 
     }
 
-
-    public void animateText(){
+    public void animateText() {
 
 
         move1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move);
@@ -192,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                                 x = v3.getX();
                                 y = v3.getY();
                                 if (boundFlag == 0) {
-                                    bound(x, y+55, w+55, h);
+                                    bound(x, y + 55, w + 55, h);
                                     boundFlag++;
                                 }
                             }
@@ -228,10 +224,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (bFLAG == 0) {
 
-            bFLAG++;
+            /*bFLAG++;
             Intent ii = new Intent(this, Bluetooth.class);
             ii.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startService(ii);
+            startService(ii);*/
 
         }
 
@@ -278,27 +274,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public void confirmActivity(String t) {
         int x = Integer.parseInt(t);
         if (x == 1) {
 
             if (state == 0) {
 
-                Intent i=new Intent(this,sCall.class);
-                startActivity(i);
-                finish();
+                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                smsIntent.setType("vnd.android-dir/mms-sms");
+                smsIntent.putExtra("address", "+919894662672");
+                smsIntent.putExtra("sms_body", "Swish away");
+                startActivity(smsIntent);
+            }
+
+            else if(state==1){
+
+                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                smsIntent.setType("vnd.android-dir/mms-sms");
+                smsIntent.putExtra("address", "+919092435064");
+                smsIntent.putExtra("sms_body", "Swish away");
+                startActivity(smsIntent);
 
             }
-            else if(state==1){
-                Intent i=new Intent(this,sMessage.class);
-                startActivity(i);
-                finish();
-            }
+
             else if(state==10){
-                Intent i=new Intent(this,sCamera.class);
-                startActivity(i);
-                finish();
+
+                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                smsIntent.setType("vnd.android-dir/mms-sms");
+                smsIntent.putExtra("address", "+8056882955");
+                smsIntent.putExtra("sms_body", "Swish away");
+                startActivity(smsIntent);
+
+            }
+
+            else {
+
+                Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                smsIntent.setType("vnd.android-dir/mms-sms");
+                smsIntent.putExtra("address", "+918056182319");
+                smsIntent.putExtra("sms_body", "Swish away");
+                startActivity(smsIntent);
+
             }
 
 
@@ -328,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
         show.setTextSize(32);
         show.setGravity(Gravity.CENTER);
         show.setTextColor(Color.parseColor("#FFFFFF"));
-        show.setText("Confirm " + t + "?");
+        show.setText("Message " + t + "?");
 
         //Button Yes...
         ViewGroup.LayoutParams pyes = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -403,7 +419,7 @@ public class MainActivity extends AppCompatActivity {
                     bound(x,y-10,w+55,h);
                     actionFlag=1;
                     state=yy;
-                    confirm("Call");
+                    confirm("Dad");
                     break;
                 case 01:
                     h= v1.getHeight();
@@ -413,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
                     bound(x,y+15,w+55,h);
                     actionFlag=1;
                     state=yy;
-                    confirm("Message");
+                    confirm("Mom");
                     break;
                 case 10:
                     h= v2.getHeight();
@@ -423,7 +439,7 @@ public class MainActivity extends AppCompatActivity {
                     bound(x,y+35,w+55,h);
                     actionFlag=1;
                     state=yy;
-                    confirm("Camera");
+                    confirm("Robert");
                     break;
                 case 11:
                     h= v3.getHeight();
@@ -433,7 +449,7 @@ public class MainActivity extends AppCompatActivity {
                     bound(x,y+35,w+55,h+15);
                     actionFlag=1;
                     state=yy;
-                    confirm("Music");
+                    confirm("Barbieee");
                     break;
             }
 
@@ -443,35 +459,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Intent ii = new Intent(this, Bluetooth.class);
-        unregisterReceiver(btrec);
-        stopService(ii);
-    }
 
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }
