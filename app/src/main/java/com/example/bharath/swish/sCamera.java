@@ -280,25 +280,41 @@ public class sCamera extends AppCompatActivity {
 
             if (state == 0) {
 
-            Intent i=new Intent(this,sPhoto.class);
+                Intent i=new Intent(this,sPhoto.class);
+                i.putExtra("iD","1");
+                i.putExtra("time","5000");
                 startActivity(i);
+
 
 
             }
 
             else if(state==1){
 
+                Intent i=new Intent(this,sPhoto.class);
+                i.putExtra("iD","1");
+                i.putExtra("time","8000");
+                startActivity(i);
 
 
             }
 
             else if(state==10){
 
+                Intent i=new Intent(this,sPhoto.class);
+                i.putExtra("iD","0");
+                i.putExtra("time","5000");
+                startActivity(i);
 
 
             }
 
             else {
+
+                Intent i=new Intent(this,sPhoto.class);
+                i.putExtra("iD","0");
+                i.putExtra("time","5000");
+                startActivity(i);
 
 
             }
@@ -330,7 +346,7 @@ public class sCamera extends AppCompatActivity {
         show.setTextSize(32);
         show.setGravity(Gravity.CENTER);
         show.setTextColor(Color.parseColor("#FFFFFF"));
-        show.setText("Call " + t + "?");
+        show.setText("pic " + t + "?");
 
         //Button Yes...
         ViewGroup.LayoutParams pyes = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

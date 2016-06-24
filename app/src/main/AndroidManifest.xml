@@ -58,6 +58,10 @@
         <activity
             android:name=".sPhoto"
             android:label="@string/title_activity_s_photo"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".sMusic"
+            android:label="@string/title_activity_s_music"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

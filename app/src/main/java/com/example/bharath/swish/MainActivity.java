@@ -301,6 +301,11 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
 
+            else if(state==11){
+                Intent i=new Intent(this,sMusic.class);
+                startActivity(i);
+                finish();
+            }
 
         }
         else{

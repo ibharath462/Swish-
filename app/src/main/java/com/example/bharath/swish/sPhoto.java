@@ -1,6 +1,9 @@
 package com.example.bharath.swish;
 
+import android.content.Intent;
+import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +28,10 @@ public class sPhoto extends AppCompatActivity {
 
 
     android.hardware.Camera camera;
+    Handler photo=null;
+    int iD,time;
+    Runnable rr;
+    final CountDownTimer[] cT = new CountDownTimer[1];
 
 
     @Override
@@ -39,17 +46,22 @@ public class sPhoto extends AppCompatActivity {
 
 
 
+        Intent i=getIntent();
+        iD=Integer.parseInt(i.getStringExtra("iD").toString());
+        time=Integer.parseInt(i.getStringExtra("time").toString());
+        Log.d("Time:",""+time);
+
 
         final SurfaceView sv;
         sv=(SurfaceView)findViewById(R.id.surfaceView);
 
 
-        camera= android.hardware.Camera.open();
+        camera= android.hardware.Camera.open(iD);
 
-        final Handler photo=new Handler();
+        photo=new Handler();
         final Handler mHandler=new Handler();
 
-        final Runnable rr=new Runnable() {
+        rr=new Runnable() {
             @Override
             public void run() {
                 camera.takePicture(null,null,jpegCallBack);
@@ -69,7 +81,6 @@ public class sPhoto extends AppCompatActivity {
                     camera.setPreviewDisplay(sv.getHolder());
                     camera.setDisplayOrientation(90);
                     camera.startPreview();
-                    photo.postDelayed(rr,5000);
 
                 }catch (IOException e){
                     e.printStackTrace();
@@ -83,9 +94,38 @@ public class sPhoto extends AppCompatActivity {
 
 
         mHandler.postDelayed(mRunnalbe, 2000);
+        countDown();
 
     }
 
+
+    public void countDown(){
+
+
+        Log.d("Time","Function");
+
+
+        cT[0] =new CountDownTimer(time,1000) {
+            @Override
+            public void onTick(final long millisUntilFinished) {
+
+
+                long t=millisUntilFinished/1000;
+                Toast.makeText(getApplicationContext(),"Keep smiling for "+t+"sec..",Toast.LENGTH_SHORT).show();
+                Log.d("Time",""+t);
+
+            }
+
+            @Override
+            public void onFinish() {
+
+                photo.postDelayed(rr,0);
+
+            }
+        }.start();
+
+
+    }
 
     final android.hardware.Camera.PictureCallback jpegCallBack=new android.hardware.Camera.PictureCallback() {
         @Override
@@ -94,7 +134,7 @@ public class sPhoto extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Photo taken baby..", Toast.LENGTH_SHORT).show();
 
             File pictureFile = getOutputMediaFile();
-            Log.d("MyCameraApp", "getting ouputmedia..");
+            Log.d("Time", "getting ouputmedia..");
             if (pictureFile == null) {
                 return;
             }
