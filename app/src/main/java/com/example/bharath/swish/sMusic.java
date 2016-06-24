@@ -49,11 +49,13 @@ public class sMusic extends AppCompatActivity {
     ImageView pp;
     View selection;
     Drawable dd;
+    int length;
     HashMap<String, String> song = new HashMap<String, String>();
     String []StringArray=new String[1000];
     final HashMap<String, String> action = new HashMap<String, String>();
     final int[] i = {10};
-    int childIndex=0,playState=0;
+    int childIndex=0;
+    boolean playState=true;
     RelativeLayout rel;
     CardView v0;
     ListView songs;
@@ -134,7 +136,7 @@ public class sMusic extends AppCompatActivity {
         selection=v0.getChildAt(childIndex);
         pp=(ImageView)v0.getChildAt(1);
         dd=selection.getBackground();
-        selection.setBackgroundColor(Color.BLUE);
+        selection.setBackgroundColor(Color.parseColor("#BDBDBD"));
     }
 
     public void animateText() {
@@ -257,21 +259,25 @@ public class sMusic extends AppCompatActivity {
     private void playSong(String path) throws IllegalArgumentException,
             IllegalStateException, IOException {
 
-        Log.d("Playing...",""+path);
 
-        mMediaPlayer.reset();
-        mMediaPlayer.setDataSource(path);
-        mMediaPlayer.prepare();
-        mMediaPlayer.start();
-        Log.d("Playing...", "playing....");
+
+            Log.d("Playing...", "" + path);
+
+            mMediaPlayer.reset();
+            mMediaPlayer.setDataSource(path);
+            mMediaPlayer.prepare();
+            mMediaPlayer.start();
+            Log.d("Playing...", "playing....");
+
+
     }
 
 
     public void changePlayState(){
 
-        if(playState==0){
+        if(!playState){
             pp.setImageResource(R.drawable.pause);
-            playState=1;
+            footer.setText("playing baby...");
         }
         else{
             pp.setImageResource(R.drawable.play);
@@ -305,6 +311,13 @@ public class sMusic extends AppCompatActivity {
                     case 0:
                         songIndex--;
                         nextSong();
+                        try {
+                            playSong(song.get(StringArray[songIndex]));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        length=0;
+                        changePlayState();
                         break;
                     case 1:
                             try {
@@ -312,13 +325,19 @@ public class sMusic extends AppCompatActivity {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-
-                        footer.setText("playing baby...");
+                        playState=!playState;
                         changePlayState();
                         break;
                     case 2:
                         songIndex++;
                         nextSong();
+                        try {
+                            playSong(song.get(StringArray[songIndex]));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        changePlayState();
+                        length=0;
                         break;
                     default:
                         Toast.makeText(getApplicationContext(),"LOLLL",Toast.LENGTH_SHORT).show();
